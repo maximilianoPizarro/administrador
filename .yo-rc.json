@@ -1,0 +1,39 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.administrador.app"
+    },
+    "jhipsterVersion": "6.10.1",
+    "applicationType": "gateway",
+    "baseName": "administrador",
+    "packageName": "com.administrador.app",
+    "packageFolder": "com/administrador/app",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YmY5ZmJkZWM0MjA2YTY5YTE4YzgzZjFlMzZmNTIzYmJjNzBmZDdkNjJlMGRhOGE2MjZiZTYxZjFlMDFhMzc2Y2E3NDUyNjkyNDM5MTQ2MGQ2ZTNlMjJlZTUwMzgyNzA2MWE2Yjg5OTgyOGQ2NjNhZWU0ZTkxYjdjOTg4ZWI2ZWQ=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "skipClient": true,
+    "creationTimestamp": 1600811647133,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": [],
+    "lastLiquibaseTimestamp": 1600812095000
+  }
+}
