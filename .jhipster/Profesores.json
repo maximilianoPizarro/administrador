@@ -1,0 +1,41 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "nombre",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "apellido",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dni",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "domicilio",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telefono",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "titulo",
+      "fieldType": "String",
+      "fieldValidateRules": []
+    }
+  ],
+  "changelogDate": "20200923150849",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "no",
+  "entityTableName": "profesores",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination"
+}
