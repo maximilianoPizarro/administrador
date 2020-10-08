@@ -51,7 +51,7 @@ spring:
     contexts: prod
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: agentedeplaya@gmail.com
     password: sugpadgcactysv
   thymeleaf:
