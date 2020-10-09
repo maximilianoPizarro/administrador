@@ -50,10 +50,10 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: smtp.gmail.com
-    port: 465
-    username: agentedeplaya@gmail.com
-    password: sugpadgcactysv
+    host: smtp.mailgun.org
+    port: 587
+    username: postmaster@sandbox81c6cee9c9e04920a4246effe01527a6.mailgun.org
+    password: 40396db0cadd26812b4d59a878a26757-0d2e38f7-97f1a2c5
   thymeleaf:
     cache: true
   sleuth:
