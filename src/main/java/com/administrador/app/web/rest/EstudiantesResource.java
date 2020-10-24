@@ -2,7 +2,7 @@ package com.administrador.app.web.rest;
 
 import com.administrador.app.domain.Estudiantes;
 import com.administrador.app.repository.EstudiantesRepository;
-import com.administrador.app.security.AuthoritiesConstants;
+import com.administrador.app.repository.UserRepository;
 import com.administrador.app.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -17,13 +17,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -43,8 +43,11 @@ public class EstudiantesResource {
 
     private final EstudiantesRepository estudiantesRepository;
 
-    public EstudiantesResource(EstudiantesRepository estudiantesRepository) {
+    private final UserRepository userRepository;
+
+    public EstudiantesResource(EstudiantesRepository estudiantesRepository, UserRepository userRepository) {
         this.estudiantesRepository = estudiantesRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -55,12 +58,16 @@ public class EstudiantesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/estudiantes")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Estudiantes> createEstudiantes(@RequestBody Estudiantes estudiantes) throws URISyntaxException {
         log.debug("REST request to save Estudiantes : {}", estudiantes);
         if (estudiantes.getId() != null) {
             throw new BadRequestAlertException("A new estudiantes cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (Objects.isNull(estudiantes.getUser())) {
+            throw new BadRequestAlertException("Invalid association value provided", ENTITY_NAME, "null");
+        }
+        Long userId = estudiantes.getUser().getId();
+        userRepository.findById(userId).ifPresent(estudiantes::user);
         Estudiantes result = estudiantesRepository.save(estudiantes);
         return ResponseEntity.created(new URI("/api/estudiantes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -77,7 +84,6 @@ public class EstudiantesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/estudiantes")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Estudiantes> updateEstudiantes(@RequestBody Estudiantes estudiantes) throws URISyntaxException {
         log.debug("REST request to update Estudiantes : {}", estudiantes);
         if (estudiantes.getId() == null) {
@@ -96,7 +102,7 @@ public class EstudiantesResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of estudiantes in body.
      */
     @GetMapping("/estudiantes")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<Estudiantes>> getAllEstudiantes(Pageable pageable) {
         log.debug("REST request to get a page of Estudiantes");
         Page<Estudiantes> page = estudiantesRepository.findAll(pageable);
@@ -111,8 +117,7 @@ public class EstudiantesResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the estudiantes, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/estudiantes/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ESTUDIANTE + "\") or hasRole(\""
-    + AuthoritiesConstants.ADMIN + "\")")
+    @Transactional(readOnly = true)
     public ResponseEntity<Estudiantes> getEstudiantes(@PathVariable Long id) {
         log.debug("REST request to get Estudiantes : {}", id);
         Optional<Estudiantes> estudiantes = estudiantesRepository.findById(id);
@@ -126,7 +131,6 @@ public class EstudiantesResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/estudiantes/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteEstudiantes(@PathVariable Long id) {
         log.debug("REST request to delete Estudiantes : {}", id);
         estudiantesRepository.deleteById(id);

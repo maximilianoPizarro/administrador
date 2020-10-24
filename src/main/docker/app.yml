@@ -8,6 +8,10 @@ services:
       - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
       - SPRING_DATASOURCE_URL=jdbc:mysql://administrador-mysql:3306/administrador?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
       - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
+      - PORT=8080
+      - JDBC_DATABASE_URL=jdbc:mysql://administrador-mysql:3306/administrador?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+      - JDBC_USER=root
+      - JDBC_PASSWORD=
     ports:
       - 8080:8080
   administrador-mysql:

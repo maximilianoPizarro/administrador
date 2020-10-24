@@ -2,7 +2,7 @@ package com.administrador.app.web.rest;
 
 import com.administrador.app.domain.Profesores;
 import com.administrador.app.repository.ProfesoresRepository;
-import com.administrador.app.security.AuthoritiesConstants;
+import com.administrador.app.repository.UserRepository;
 import com.administrador.app.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -17,13 +17,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -43,8 +43,11 @@ public class ProfesoresResource {
 
     private final ProfesoresRepository profesoresRepository;
 
-    public ProfesoresResource(ProfesoresRepository profesoresRepository) {
+    private final UserRepository userRepository;
+
+    public ProfesoresResource(ProfesoresRepository profesoresRepository, UserRepository userRepository) {
         this.profesoresRepository = profesoresRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -55,12 +58,16 @@ public class ProfesoresResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/profesores")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Profesores> createProfesores(@RequestBody Profesores profesores) throws URISyntaxException {
         log.debug("REST request to save Profesores : {}", profesores);
         if (profesores.getId() != null) {
             throw new BadRequestAlertException("A new profesores cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (Objects.isNull(profesores.getUser())) {
+            throw new BadRequestAlertException("Invalid association value provided", ENTITY_NAME, "null");
+        }
+        Long userId = profesores.getUser().getId();
+        userRepository.findById(userId).ifPresent(profesores::user);
         Profesores result = profesoresRepository.save(profesores);
         return ResponseEntity.created(new URI("/api/profesores/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -77,7 +84,6 @@ public class ProfesoresResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/profesores")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Profesores> updateProfesores(@RequestBody Profesores profesores) throws URISyntaxException {
         log.debug("REST request to update Profesores : {}", profesores);
         if (profesores.getId() == null) {
@@ -96,7 +102,7 @@ public class ProfesoresResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profesores in body.
      */
     @GetMapping("/profesores")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<Profesores>> getAllProfesores(Pageable pageable) {
         log.debug("REST request to get a page of Profesores");
         Page<Profesores> page = profesoresRepository.findAll(pageable);
@@ -111,7 +117,7 @@ public class ProfesoresResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profesores, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/profesores/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @Transactional(readOnly = true)
     public ResponseEntity<Profesores> getProfesores(@PathVariable Long id) {
         log.debug("REST request to get Profesores : {}", id);
         Optional<Profesores> profesores = profesoresRepository.findById(id);
@@ -125,7 +131,6 @@ public class ProfesoresResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/profesores/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteProfesores(@PathVariable Long id) {
         log.debug("REST request to delete Profesores : {}", id);
         profesoresRepository.deleteById(id);

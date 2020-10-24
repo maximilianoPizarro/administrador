@@ -2,7 +2,9 @@ package com.administrador.app.web.rest;
 
 import com.administrador.app.AdministradorApp;
 import com.administrador.app.domain.Profesores;
+import com.administrador.app.domain.User;
 import com.administrador.app.repository.ProfesoresRepository;
+import com.administrador.app.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +51,8 @@ public class ProfesoresResourceIT {
 
     @Autowired
     private ProfesoresRepository profesoresRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EntityManager em;
@@ -72,6 +76,11 @@ public class ProfesoresResourceIT {
             .domicilio(DEFAULT_DOMICILIO)
             .telefono(DEFAULT_TELEFONO)
             .titulo(DEFAULT_TITULO);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        profesores.setUser(user);
         return profesores;
     }
     /**
@@ -88,6 +97,11 @@ public class ProfesoresResourceIT {
             .domicilio(UPDATED_DOMICILIO)
             .telefono(UPDATED_TELEFONO)
             .titulo(UPDATED_TITULO);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        profesores.setUser(user);
         return profesores;
     }
 
@@ -116,6 +130,9 @@ public class ProfesoresResourceIT {
         assertThat(testProfesores.getDomicilio()).isEqualTo(DEFAULT_DOMICILIO);
         assertThat(testProfesores.getTelefono()).isEqualTo(DEFAULT_TELEFONO);
         assertThat(testProfesores.getTitulo()).isEqualTo(DEFAULT_TITULO);
+
+        // Validate the id for MapsId, the ids must be same
+        assertThat(testProfesores.getId()).isEqualTo(testProfesores.getUser().getId());
     }
 
     @Test
@@ -137,6 +154,42 @@ public class ProfesoresResourceIT {
         assertThat(profesoresList).hasSize(databaseSizeBeforeCreate);
     }
 
+    @Test
+    @Transactional
+    public void updateProfesoresMapsIdAssociationWithNewId() throws Exception {
+        // Initialize the database
+        profesoresRepository.saveAndFlush(profesores);
+        int databaseSizeBeforeCreate = profesoresRepository.findAll().size();
+
+        // Add a new parent entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+
+        // Load the profesores
+        Profesores updatedProfesores = profesoresRepository.findById(profesores.getId()).get();
+        // Disconnect from session so that the updates on updatedProfesores are not directly saved in db
+        em.detach(updatedProfesores);
+
+        // Update the User with new association value
+        updatedProfesores.setUser(user);
+
+        // Update the entity
+        restProfesoresMockMvc.perform(put("/api/profesores")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(updatedProfesores)))
+            .andExpect(status().isOk());
+
+        // Validate the Profesores in the database
+        List<Profesores> profesoresList = profesoresRepository.findAll();
+        assertThat(profesoresList).hasSize(databaseSizeBeforeCreate);
+        Profesores testProfesores = profesoresList.get(profesoresList.size() - 1);
+
+        // Validate the id for MapsId, the ids must be same
+        // Uncomment the following line for assertion. However, please note that there is a known issue and uncommenting will fail the test.
+        // Please look at https://github.com/jhipster/generator-jhipster/issues/9100. You can modify this test as necessary.
+        // assertThat(testProfesores.getId()).isEqualTo(testProfesores.getUser().getId());
+    }
 
     @Test
     @Transactional

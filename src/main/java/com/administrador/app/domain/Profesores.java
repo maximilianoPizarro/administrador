@@ -15,7 +15,6 @@ public class Profesores implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nombre")
@@ -35,6 +34,12 @@ public class Profesores implements Serializable {
 
     @Column(name = "titulo")
     private String titulo;
+
+    @OneToOne
+
+    @MapsId
+    @JoinColumn(name = "id")
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -121,6 +126,19 @@ public class Profesores implements Serializable {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Profesores user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
