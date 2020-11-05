@@ -196,8 +196,8 @@ public class UserResource {
     @GetMapping("/users/reset/{login}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> blanquearPasswordByAdmin(@PathVariable String login) {
-        log.debug("REST blaquear password de User: {}", login);
-        userService.changePasswordByAdmin(login,"plaformaunla");
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "Blaqueo de password para el user " + login, login)).build();
+        log.debug("REST blanquear password de User: {}", login);
+        userService.changePasswordByAdmin(login,"plataformaunla");
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "Blanqueo de password para el user " + login, login)).build();
     }
 }
