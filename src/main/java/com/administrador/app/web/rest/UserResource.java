@@ -193,11 +193,11 @@ public class UserResource {
      * @param login the login of the user to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @GetMapping("/users/reset/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping("/users/reset/{login}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> blanquearPasswordByAdmin(@PathVariable String login) {
         log.debug("REST blaquear password de User: {}", login);
-        userService.changePasswordByAdmin(login,"PlaformaUnla2020");
+        userService.changePasswordByAdmin(login,"plaformaunla");
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "Blaqueo de password para el user " + login, login)).build();
     }
 }
