@@ -35,6 +35,9 @@ public class Estudiantes implements Serializable {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "id_carreras")
+    private Integer idCarreras;
+
     @OneToOne
 
     @MapsId
@@ -128,6 +131,19 @@ public class Estudiantes implements Serializable {
         this.email = email;
     }
 
+    public Integer getIdCarreras() {
+        return idCarreras;
+    }
+
+    public Estudiantes idCarreras(Integer idCarreras) {
+        this.idCarreras = idCarreras;
+        return this;
+    }
+
+    public void setIdCarreras(Integer idCarreras) {
+        this.idCarreras = idCarreras;
+    }
+
     public User getUser() {
         return user;
     }
@@ -169,6 +185,7 @@ public class Estudiantes implements Serializable {
             ", domicilio='" + getDomicilio() + "'" +
             ", telefono='" + getTelefono() + "'" +
             ", email='" + getEmail() + "'" +
+            ", idCarreras=" + getIdCarreras() +
             "}";
     }
 }

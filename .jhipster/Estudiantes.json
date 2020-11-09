@@ -39,6 +39,10 @@
     {
       "fieldName": "email",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "idCarreras",
+      "fieldType": "Integer"
     }
   ],
   "changelogDate": "20200922220135",

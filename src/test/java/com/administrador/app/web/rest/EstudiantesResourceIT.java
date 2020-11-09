@@ -49,6 +49,9 @@ public class EstudiantesResourceIT {
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
     private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
+    private static final Integer DEFAULT_ID_CARRERAS = 1;
+    private static final Integer UPDATED_ID_CARRERAS = 2;
+
     @Autowired
     private EstudiantesRepository estudiantesRepository;
     @Autowired
@@ -75,7 +78,8 @@ public class EstudiantesResourceIT {
             .dni(DEFAULT_DNI)
             .domicilio(DEFAULT_DOMICILIO)
             .telefono(DEFAULT_TELEFONO)
-            .email(DEFAULT_EMAIL);
+            .email(DEFAULT_EMAIL)
+            .idCarreras(DEFAULT_ID_CARRERAS);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
@@ -96,7 +100,8 @@ public class EstudiantesResourceIT {
             .dni(UPDATED_DNI)
             .domicilio(UPDATED_DOMICILIO)
             .telefono(UPDATED_TELEFONO)
-            .email(UPDATED_EMAIL);
+            .email(UPDATED_EMAIL)
+            .idCarreras(UPDATED_ID_CARRERAS);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
@@ -130,6 +135,7 @@ public class EstudiantesResourceIT {
         assertThat(testEstudiantes.getDomicilio()).isEqualTo(DEFAULT_DOMICILIO);
         assertThat(testEstudiantes.getTelefono()).isEqualTo(DEFAULT_TELEFONO);
         assertThat(testEstudiantes.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testEstudiantes.getIdCarreras()).isEqualTo(DEFAULT_ID_CARRERAS);
 
         // Validate the id for MapsId, the ids must be same
         assertThat(testEstudiantes.getId()).isEqualTo(testEstudiantes.getUser().getId());
@@ -207,7 +213,8 @@ public class EstudiantesResourceIT {
             .andExpect(jsonPath("$.[*].dni").value(hasItem(DEFAULT_DNI)))
             .andExpect(jsonPath("$.[*].domicilio").value(hasItem(DEFAULT_DOMICILIO)))
             .andExpect(jsonPath("$.[*].telefono").value(hasItem(DEFAULT_TELEFONO)))
-            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].idCarreras").value(hasItem(DEFAULT_ID_CARRERAS)));
     }
     
     @Test
@@ -226,7 +233,8 @@ public class EstudiantesResourceIT {
             .andExpect(jsonPath("$.dni").value(DEFAULT_DNI))
             .andExpect(jsonPath("$.domicilio").value(DEFAULT_DOMICILIO))
             .andExpect(jsonPath("$.telefono").value(DEFAULT_TELEFONO))
-            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL));
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+            .andExpect(jsonPath("$.idCarreras").value(DEFAULT_ID_CARRERAS));
     }
     @Test
     @Transactional
@@ -254,7 +262,8 @@ public class EstudiantesResourceIT {
             .dni(UPDATED_DNI)
             .domicilio(UPDATED_DOMICILIO)
             .telefono(UPDATED_TELEFONO)
-            .email(UPDATED_EMAIL);
+            .email(UPDATED_EMAIL)
+            .idCarreras(UPDATED_ID_CARRERAS);
 
         restEstudiantesMockMvc.perform(put("/api/estudiantes")
             .contentType(MediaType.APPLICATION_JSON)
@@ -271,6 +280,7 @@ public class EstudiantesResourceIT {
         assertThat(testEstudiantes.getDomicilio()).isEqualTo(UPDATED_DOMICILIO);
         assertThat(testEstudiantes.getTelefono()).isEqualTo(UPDATED_TELEFONO);
         assertThat(testEstudiantes.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testEstudiantes.getIdCarreras()).isEqualTo(UPDATED_ID_CARRERAS);
     }
 
     @Test
